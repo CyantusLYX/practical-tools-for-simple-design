@@ -35,7 +35,7 @@ public:
      * (default is true).
      */
     Text(const std::string &font, int size, const std::string &text,
-         const Util::Color &color = Color(127, 127, 127), bool useAA = true);
+         const Util::Color &color = Color(127, 127, 127), bool useAA = false);
 
     glm::vec2 GetSize() const override { return m_Size; };
 

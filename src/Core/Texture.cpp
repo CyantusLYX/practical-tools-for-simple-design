@@ -58,9 +58,19 @@ void Texture::UpdateData(GLint format, int width, int height,
     glTexImage2D(GL_TEXTURE_2D, 0, GlFormatToGlInternalFormat(format), width,
                  height, 0, format, GL_UNSIGNED_BYTE, data);
 
+    // 設置紋理參數
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
-    glGenerateMipmap(GL_TEXTURE_2D);
+
+    // 添加：設置紋理包裹模式為 CLAMP_TO_EDGE，避免邊緣採樣問題
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // 只對使用線性過濾的紋理生成 mipmap
+    if (m_MinFilter == GL_LINEAR_MIPMAP_LINEAR ||
+        m_MinFilter == GL_LINEAR_MIPMAP_NEAREST) {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
 }
 
 void Texture::UseAntiAliasing(bool useAA) {
@@ -70,11 +80,20 @@ void Texture::UseAntiAliasing(bool useAA) {
      * https://www.khronos.org/opengl/wiki/Sampler_Object#Sampling_parameters
      */
     if (useAA) {
-        m_MinFilter = GL_LINEAR_MIPMAP_LINEAR;
+        m_MinFilter =
+            GL_LINEAR; // 修改: 使用 GL_LINEAR 而非 GL_LINEAR_MIPMAP_LINEAR
         m_MagFilter = GL_LINEAR;
     } else {
-        m_MinFilter = GL_NEAREST_MIPMAP_NEAREST;
+        m_MinFilter =
+            GL_NEAREST; // 修改: 使用 GL_NEAREST 而非 GL_NEAREST_MIPMAP_NEAREST
         m_MagFilter = GL_NEAREST;
     }
+
+    // 立即套用參數
+    glBindTexture(GL_TEXTURE_2D, m_TextureId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 } // namespace Core
