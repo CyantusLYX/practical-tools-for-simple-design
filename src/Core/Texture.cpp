@@ -59,12 +59,10 @@ void Texture::UpdateData(GLint format, int width, int height,
                  height, 0, format, GL_UNSIGNED_BYTE, data);
 
     // 設置紋理參數
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
-
-    // 添加：設置紋理包裹模式為 CLAMP_TO_EDGE，避免邊緣採樣問題
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     // 只對使用線性過濾的紋理生成 mipmap
     if (m_MinFilter == GL_LINEAR_MIPMAP_LINEAR ||
