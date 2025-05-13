@@ -21,4 +21,5 @@ SDLPosition PTSDPosition::ToSDLPosition() const {
         -(static_cast<int>(
             this->y + static_cast<float>(PTSD_Config::WINDOW_HEIGHT) / 2.0F)));
 }
+
 } // namespace Util

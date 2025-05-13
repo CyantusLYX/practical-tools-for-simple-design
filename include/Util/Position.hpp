@@ -1,6 +1,7 @@
 #ifndef PTSD_UTIL_POSITION_HPP
 #define PTSD_UTIL_POSITION_HPP
 
+#include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 
 namespace Util {
@@ -67,6 +68,10 @@ struct PTSDPosition {
     }
 
     SDLPosition ToSDLPosition() const;
+
+    glm::vec2 ToVec2() const {
+        return {x, y};
+    }
 };
 
 } // namespace Util
